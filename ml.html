@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ML Pipeline — Complete Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0e17;
+    --panel: #111827;
+    --border: #1e2d45;
+    --accent: #00d4aa;
+    --accent2: #7c6af7;
+    --accent3: #f97316;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --code-bg: #0d1117;
+    --step-colors: #00d4aa, #7c6af7, #f97316, #ec4899, #eab308, #3b82f6, #10b981, #ef4444;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(0,212,170,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,170,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+  .container { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* HEADER */
+  header { text-align: center; padding: 60px 0 50px; }
+  .tag {
+    display: inline-block;
+    background: rgba(0,212,170,0.1);
+    border: 1px solid rgba(0,212,170,0.3);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+  }
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+  h1 span { color: var(--accent); }
+  .subtitle { color: var(--muted); font-size: 1.05rem; max-width: 560px; margin: 0 auto 32px; line-height: 1.7; }
+  .examples-row {
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px;
+  }
+  .ex-pill {
+    background: rgba(124,106,247,0.12);
+    border: 1px solid rgba(124,106,247,0.25);
+    color: #a78bfa;
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* PIPELINE MAP */
+  .pipeline-map {
+    display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+    gap: 4px; margin: 48px 0; padding: 24px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .pm-step {
+    display: flex; align-items: center; gap: 4px; cursor: pointer;
+  }
+  .pm-dot {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .pm-dot:hover { transform: scale(1.15); box-shadow: 0 0 12px currentColor; }
+  .pm-label { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .pm-arrow { color: var(--border); font-size: 18px; margin: 0 2px; }
+
+  /* STEPS */
+  .step-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 28px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+    animation: fadeUp 0.5s ease both;
+  }
+  .step-card:hover { border-color: var(--accent); }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .step-card:nth-child(1) { animation-delay: 0.05s; }
+  .step-card:nth-child(2) { animation-delay: 0.1s; }
+  .step-card:nth-child(3) { animation-delay: 0.15s; }
+  .step-card:nth-child(4) { animation-delay: 0.2s; }
+  .step-card:nth-child(5) { animation-delay: 0.25s; }
+  .step-card:nth-child(6) { animation-delay: 0.3s; }
+  .step-card:nth-child(7) { animation-delay: 0.35s; }
+  .step-card:nth-child(8) { animation-delay: 0.4s; }
+
+  .step-header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 22px 28px; cursor: pointer; user-select: none;
+  }
+  .step-num {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 18px; flex-shrink: 0;
+  }
+  .step-title-group { flex: 1; }
+  .step-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+  .step-meta { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+  .step-toggle {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .step-card.open .step-toggle { transform: rotate(180deg); }
+
+  .step-body {
+    display: none; padding: 0 28px 28px;
+  }
+  .step-card.open .step-body { display: block; }
+
+  .desc { color: #94a3b8; line-height: 1.75; margin-bottom: 20px; font-size: 0.95rem; }
+
+  /* Sub sections */
+  .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 600px) { .sub-grid { grid-template-columns: 1fr; } }
+  .sub-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .sub-card h4 { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .sub-card ul { list-style: none; }
+  .sub-card ul li {
+    font-size: 13px; color: #94a3b8;
+    padding: 3px 0; padding-left: 14px;
+    position: relative;
+  }
+  .sub-card ul li::before {
+    content: '›'; position: absolute; left: 0; color: var(--accent);
+  }
+
+  /* Code block */
+  .code-wrap { position: relative; margin-top: 8px; }
+  .code-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: #cdd9e5;
+  }
+  .copy-btn {
+    position: absolute; top: 32px; right: 12px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px; padding: 4px 10px;
+    border-radius: 6px; cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { background: rgba(0,212,170,0.1); color: var(--accent); border-color: var(--accent); }
+
+  /* Syntax colors */
+  .kw { color: #7c6af7; }
+  .fn { color: #00d4aa; }
+  .st { color: #f97316; }
+  .cm { color: #4b5e7a; font-style: italic; }
+  .nu { color: #eab308; }
+  .cl { color: #ec4899; }
+  .op { color: #e2e8f0; }
+
+  /* Tips box */
+  .tip-box {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: rgba(0,212,170,0.06);
+    border: 1px solid rgba(0,212,170,0.2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 16px;
+  }
+  .tip-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .tip-text { font-size: 13px; color: #94a3b8; line-height: 1.65; }
+  .tip-text strong { color: var(--accent); }
+
+  /* Libraries row */
+  .libs-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .lib-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; padding: 4px 12px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+  }
+
+  /* Final section */
+  .final-card {
+    background: linear-gradient(135deg, rgba(0,212,170,0.08), rgba(124,106,247,0.08));
+    border: 1px solid rgba(0,212,170,0.3);
+    border-radius: 16px;
+    padding: 36px 32px;
+    text-align: center;
+    margin-top: 48px;
+  }
+  .final-card h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 12px; }
+  .final-card p { color: var(--muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 24px; }
+  .checklist {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; text-align: left; max-width: 540px; margin: 0 auto;
+  }
+  @media (max-width: 500px) { .checklist { grid-template-columns: 1fr; } }
+  .check-item {
+    display: flex; gap: 10px; align-items: center;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 13px; color: #94a3b8;
+  }
+  .check-item span:first-child { color: var(--accent); font-size: 16px; }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="tag">Machine Learning</div>
+    <h1>The Universal<br/><span>ML Pipeline</span> Roadmap</h1>
+    <p class="subtitle">Every dataset. Every prediction problem. The same 8 steps — mastered once, applied forever.</p>
+    <div class="examples-row">
+      <span class="ex-pill">🏠 House Price Prediction</span>
+      <span class="ex-pill">💧 Water Pollutants</span>
+      <span class="ex-pill">🛒 Sales Forecasting</span>
+      <span class="ex-pill">🌾 Crop Yield</span>
+    </div>
+  </header>
+
+  <!-- PIPELINE MAP -->
+  <div class="pipeline-map">
+    <div class="pm-step"><div class="pm-dot" style="background:rgba(0,212,170,0.2);color:#00d4aa">1</div><span class="pm-label">Load</span></div>
+    <span class="pm-arrow">→</span>
+    <div class="pm-step"><div class="pm-dot" style="background:rgba(124,106,247,0.2);color:#7c6af7">2</div><span class="pm-label">Explore</span></div>
+    <span class="pm-arrow">→</span>
+    <div class="pm-step"><div class="pm-dot" style="background:rgba(249,115,22,0.2);color:#f97316">3</div><span class="pm-label">Clean</span></div>
+    <span class="pm-arrow">→</span>
+    <div class="pm-step"><div class="pm-dot" style="background:rgba(236,72,153,0.2);color:#ec4899">4</div><span class="pm-label">Features</span></div>
+    <span class="pm-arrow">→</span>
+    <div class="pm-step"><div class="pm-dot" style="background:rgba(234,179,8,0.2);color:#eab308">5</div><span class="pm-label">Split</span></div>
+    <span class="pm-arrow">→</span>
+    <div class="pm-step"><div class="pm-dot" style="background:rgba(59,130,246,0.2);color:#3b82f6">6</div><span class="pm-label">Train</span></div>
+    <span class="pm-arrow">→</span>
+    <div class="pm-step"><div class="pm-dot" style="background:rgba(16,185,129,0.2);color:#10b981">7</div><span class="pm-label">Evaluate</span></div>
+    <span class="pm-arrow">→</span>
+    <div class="pm-step"><div class="pm-dot" style="background:rgba(239,68,68,0.2);color:#ef4444">8</div><span class="pm-label">Predict</span></div>
+  </div>
+
+  <!-- STEP CARDS -->
+
+  <!-- STEP 1 -->
+  <div class="step-card open" id="s1">
+    <div class="step-header" onclick="toggle('s1')">
+      <div class="step-num" style="background:rgba(0,212,170,0.15);color:#00d4aa">1</div>
+      <div class="step-title-group">
+        <div class="step-title">Import Libraries & Load Dataset</div>
+        <div class="step-meta">pandas · numpy · matplotlib · seaborn</div>
+      </div>
+      <div class="step-toggle">▾</div>
+    </div>
+    <div class="step-body">
+      <p class="desc">The very first thing — import your tools and load your data into a DataFrame. Think of this as opening your toolbox and reading your raw material.</p>
+      <div class="libs-row">
+        <span class="lib-badge" style="color:#00d4aa">pandas</span>
+        <span class="lib-badge" style="color:#7c6af7">numpy</span>
+        <span class="lib-badge" style="color:#f97316">matplotlib</span>
+        <span class="lib-badge" style="color:#ec4899">seaborn</span>
+      </div>
+      <div class="code-wrap">
+        <div class="code-label">python</div>
+        <button class="copy-btn" onclick="copyCode('c1')">copy</button>
+        <pre id="c1"><span class="cm"># ── STEP 1: Import Libraries & Load Data ──────────────</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> seaborn <span class="kw">as</span> sns
+
+<span class="cm"># Load your dataset (CSV, Excel, JSON, SQL, etc.)</span>
+df = pd.<span class="fn">read_csv</span>(<span class="st">'your_dataset.csv'</span>)
+<span class="cm"># df = pd.read_excel('data.xlsx')</span>
+<span class="cm"># df = pd.read_json('data.json')</span>
+
+<span class="cm"># First look at your data</span>
+<span class="fn">print</span>(df.<span class="fn">head</span>())       <span class="cm"># first 5 rows</span>
+<span class="fn">print</span>(df.<span class="fn">shape</span>)       <span class="cm"># (rows, columns)</span>
+<span class="fn">print</span>(df.columns)    <span class="cm"># all column names</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-card" id="s2">
+    <div class="step-header" onclick="toggle('s2')">
+      <div class="step-num" style="background:rgba(124,106,247,0.15);color:#7c6af7">2</div>
+      <div class="step-title-group">
+        <div class="step-title">Exploratory Data Analysis (EDA)</div>
+        <div class="step-meta">Understand shape · distributions · correlations</div>
+      </div>
+      <div class="step-toggle">▾</div>
+    </div>
+    <div class="step-body">
+      <p class="desc">Before touching anything, understand your data. Look at statistics, distributions, and relationships between columns. This step tells you what problems to fix next.</p>
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h4 style="color:#7c6af7">What to check</h4>
+          <ul>
+            <li>Number of rows & columns</li>
+            <li>Data types of each column</li>
+            <li>Missing values count</li>
+            <li>Min, max, mean, std</li>
+            <li>Unique values per column</li>
+          </ul>
+        </div>
+        <div class="sub-card">
+          <h4 style="color:#7c6af7">Visualizations</h4>
+          <ul>
+            <li>Histogram — value distribution</li>
+            <li>Heatmap — correlations</li>
+            <li>Boxplot — outliers</li>
+            <li>Scatter — relationships</li>
+            <li>Count plot — categories</li>
+          </ul>
+        </div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-label">python</div>
+        <button class="copy-btn" onclick="copyCode('c2')">copy</button>
+        <pre id="c2"><span class="cm"># ── STEP 2: Exploratory Data Analysis ─────────────────</span>
+<span class="fn">print</span>(df.<span class="fn">info</span>())           <span class="cm"># dtypes + null counts</span>
+<span class="fn">print</span>(df.<span class="fn">describe</span>())       <span class="cm"># statistics for number columns</span>
+<span class="fn">print</span>(df.<span class="fn">isnull</span>().<span class="fn">sum</span>())   <span class="cm"># missing values per column</span>
+<span class="fn">print</span>(df.<span class="fn">duplicated</span>().<span class="fn">sum</span>()) <span class="cm"># duplicate rows</span>
+
+<span class="cm"># Visualise correlations</span>
+plt.<span class="fn">figure</span>(figsize=(<span class="nu">10</span>, <span class="nu">8</span>))
+sns.<span class="fn">heatmap</span>(df.<span class="fn">corr</span>(), annot=<span class="kw">True</span>, cmap=<span class="st">'coolwarm'</span>)
+plt.<span class="fn">title</span>(<span class="st">'Feature Correlation'</span>)
+plt.<span class="fn">show</span>()
+
+<span class="cm"># Distribution of target column</span>
+sns.<span class="fn">histplot</span>(df[<span class="st">'target_column'</span>], kde=<span class="kw">True</span>)
+plt.<span class="fn">show</span>()
+
+<span class="cm"># Outlier check with boxplot</span>
+sns.<span class="fn">boxplot</span>(x=df[<span class="st">'any_numeric_column'</span>])
+plt.<span class="fn">show</span>()</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-card" id="s3">
+    <div class="step-header" onclick="toggle('s3')">
+      <div class="step-num" style="background:rgba(249,115,22,0.15);color:#f97316">3</div>
+      <div class="step-title-group">
+        <div class="step-title">Data Cleaning & Preprocessing</div>
+        <div class="step-meta">Handle nulls · remove duplicates · fix types</div>
+      </div>
+      <div class="step-toggle">▾</div>
+    </div>
+    <div class="step-body">
+      <p class="desc">Raw data is always messy. Fix missing values, remove duplicates, fix wrong data types, and handle outliers. Clean data = better model.</p>
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h4 style="color:#f97316">Missing Values</h4>
+          <ul>
+            <li>Fill with mean/median (numbers)</li>
+            <li>Fill with mode (categories)</li>
+            <li>Drop rows if very few missing</li>
+            <li>Drop column if >50% missing</li>
+          </ul>
+        </div>
+        <div class="sub-card">
+          <h4 style="color:#f97316">Outliers</h4>
+          <ul>
+            <li>IQR method (remove extremes)</li>
+            <li>Z-score (remove > 3 std)</li>
+            <li>Cap values (clip)</li>
+            <li>Log transform to reduce skew</li>
+          </ul>
+        </div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-label">python</div>
+        <button class="copy-btn" onclick="copyCode('c3')">copy</button>
+        <pre id="c3"><span class="cm"># ── STEP 3: Data Cleaning ──────────────────────────────</span>
+<span class="cm"># Drop duplicates</span>
+df.<span class="fn">drop_duplicates</span>(inplace=<span class="kw">True</span>)
+
+<span class="cm"># Fill missing values</span>
+df[<span class="st">'numeric_col'</span>].<span class="fn">fillna</span>(df[<span class="st">'numeric_col'</span>].<span class="fn">median</span>(), inplace=<span class="kw">True</span>)
+df[<span class="st">'category_col'</span>].<span class="fn">fillna</span>(df[<span class="st">'category_col'</span>].<span class="fn">mode</span>()[<span class="nu">0</span>], inplace=<span class="kw">True</span>)
+
+<span class="cm"># Drop column if too many nulls</span>
+df.<span class="fn">drop</span>(columns=[<span class="st">'bad_column'</span>], inplace=<span class="kw">True</span>)
+
+<span class="cm"># Fix data types</span>
+df[<span class="st">'date_col'</span>] = pd.<span class="fn">to_datetime</span>(df[<span class="st">'date_col'</span>])
+df[<span class="st">'num_col'</span>]  = df[<span class="st">'num_col'</span>].<span class="fn">astype</span>(<span class="cl">float</span>)
+
+<span class="cm"># Remove outliers using IQR</span>
+Q1  = df[<span class="st">'price'</span>].<span class="fn">quantile</span>(<span class="nu">0.25</span>)
+Q3  = df[<span class="st">'price'</span>].<span class="fn">quantile</span>(<span class="nu">0.75</span>)
+IQR = Q3 - Q1
+df  = df[(df[<span class="st">'price'</span>] >= Q1 - <span class="nu">1.5</span>*IQR) & (df[<span class="st">'price'</span>] <= Q3 + <span class="nu">1.5</span>*IQR)]</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-card" id="s4">
+    <div class="step-header" onclick="toggle('s4')">
+      <div class="step-num" style="background:rgba(236,72,153,0.15);color:#ec4899">4</div>
+      <div class="step-title-group">
+        <div class="step-title">Feature Engineering & Encoding</div>
+        <div class="step-meta">Encode categories · scale numbers · create features</div>
+      </div>
+      <div class="step-toggle">▾</div>
+    </div>
+    <div class="step-body">
+      <p class="desc">ML models only understand numbers. Convert text categories to numbers, scale numeric features so no column dominates, and create new useful features from existing ones.</p>
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h4 style="color:#ec4899">Encoding Types</h4>
+          <ul>
+            <li>Label Encoding — 2 categories</li>
+            <li>One-Hot — multiple categories</li>
+            <li>Ordinal — ordered categories</li>
+            <li>Target encoding — high cardinality</li>
+          </ul>
+        </div>
+        <div class="sub-card">
+          <h4 style="color:#ec4899">Scaling Types</h4>
+          <ul>
+            <li>StandardScaler — mean=0, std=1</li>
+            <li>MinMaxScaler — range 0 to 1</li>
+            <li>RobustScaler — outlier-resistant</li>
+            <li>Log transform — skewed data</li>
+          </ul>
+        </div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-label">python</div>
+        <button class="copy-btn" onclick="copyCode('c4')">copy</button>
+        <pre id="c4"><span class="cm"># ── STEP 4: Feature Engineering & Encoding ────────────</span>
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> LabelEncoder, StandardScaler
+
+<span class="cm"># Label Encode binary text columns (Yes/No, Male/Female)</span>
+le = <span class="cl">LabelEncoder</span>()
+df[<span class="st">'gender'</span>] = le.<span class="fn">fit_transform</span>(df[<span class="st">'gender'</span>])
+
+<span class="cm"># One-Hot Encode multi-category columns</span>
+df = pd.<span class="fn">get_dummies</span>(df, columns=[<span class="st">'city'</span>, <span class="st">'product_type'</span>])
+
+<span class="cm"># Create new features (Feature Engineering)</span>
+df[<span class="st">'age_squared'</span>]       = df[<span class="st">'age'</span>] ** <span class="nu">2</span>
+df[<span class="st">'price_per_sqft'</span>]    = df[<span class="st">'price'</span>] / df[<span class="st">'area'</span>]
+df[<span class="st">'log_income'</span>]        = np.<span class="fn">log1p</span>(df[<span class="st">'income'</span>])
+
+<span class="cm"># Separate Features (X) and Target (y)</span>
+X = df.<span class="fn">drop</span>(columns=[<span class="st">'target_column'</span>])
+y = df[<span class="st">'target_column'</span>]
+
+<span class="cm"># Scale features</span>
+scaler = <span class="cl">StandardScaler</span>()
+X_scaled = scaler.<span class="fn">fit_transform</span>(X)</pre>
+      </div>
+      <div class="tip-box">
+        <span class="tip-icon">💡</span>
+        <span class="tip-text"><strong>Rule of thumb:</strong> Use StandardScaler for models like Linear Regression, SVM, KNN. Tree-based models (Random Forest, XGBoost) usually don't need scaling.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step-card" id="s5">
+    <div class="step-header" onclick="toggle('s5')">
+      <div class="step-num" style="background:rgba(234,179,8,0.15);color:#eab308">5</div>
+      <div class="step-title-group">
+        <div class="step-title">Split Data — Train & Test</div>
+        <div class="step-meta">80% train · 20% test · stratify for classification</div>
+      </div>
+      <div class="step-toggle">▾</div>
+    </div>
+    <div class="step-body">
+      <p class="desc">Split your data so the model learns on one part and is tested on unseen data. This mimics real-world usage and gives you an honest performance score.</p>
+      <div class="code-wrap">
+        <div class="code-label">python</div>
+        <button class="copy-btn" onclick="copyCode('c5')">copy</button>
+        <pre id="c5"><span class="cm"># ── STEP 5: Train-Test Split ───────────────────────────</span>
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+
+X_train, X_test, y_train, y_test = <span class="fn">train_test_split</span>(
+    X_scaled, y,
+    test_size=<span class="nu">0.2</span>,      <span class="cm"># 20% for testing</span>
+    random_state=<span class="nu">42</span>,   <span class="cm"># reproducibility</span>
+    stratify=y          <span class="cm"># use for classification only</span>
+)
+
+<span class="fn">print</span>(<span class="st">f"Train: {X_train.shape}, Test: {X_test.shape}"</span>)
+
+<span class="cm"># Optional: Validation set (for tuning)</span>
+X_train, X_val, y_train, y_val = <span class="fn">train_test_split</span>(
+    X_train, y_train, test_size=<span class="nu">0.1</span>, random_state=<span class="nu">42</span>
+)</pre>
+      </div>
+      <div class="tip-box">
+        <span class="tip-icon">⚠️</span>
+        <span class="tip-text"><strong>Remove stratify=y</strong> for regression problems (house price, sales). Keep it for classification (spam/not spam, disease/no disease).</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step-card" id="s6">
+    <div class="step-header" onclick="toggle('s6')">
+      <div class="step-num" style="background:rgba(59,130,246,0.15);color:#3b82f6">6</div>
+      <div class="step-title-group">
+        <div class="step-title">Choose & Train the Model</div>
+        <div class="step-meta">Regression · Classification · Ensemble</div>
+      </div>
+      <div class="step-toggle">▾</div>
+    </div>
+    <div class="step-body">
+      <p class="desc">Pick the right algorithm based on your problem type. Try multiple models and compare — there's no single best model for every dataset.</p>
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h4 style="color:#3b82f6">Regression (predict a number)</h4>
+          <ul>
+            <li>Linear Regression — baseline</li>
+            <li>Decision Tree Regressor</li>
+            <li>Random Forest Regressor</li>
+            <li>XGBoost / Gradient Boost</li>
+          </ul>
+        </div>
+        <div class="sub-card">
+          <h4 style="color:#3b82f6">Classification (predict a class)</h4>
+          <ul>
+            <li>Logistic Regression — baseline</li>
+            <li>Decision Tree Classifier</li>
+            <li>Random Forest Classifier</li>
+            <li>SVM / KNN / XGBoost</li>
+          </ul>
+        </div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-label">python</div>
+        <button class="copy-btn" onclick="copyCode('c6')">copy</button>
+        <pre id="c6"><span class="cm"># ── STEP 6: Choose & Train Model ──────────────────────</span>
+<span class="kw">from</span> sklearn.linear_model    <span class="kw">import</span> LinearRegression, LogisticRegression
+<span class="kw">from</span> sklearn.tree            <span class="kw">import</span> DecisionTreeClassifier
+<span class="kw">from</span> sklearn.ensemble        <span class="kw">import</span> RandomForestClassifier, RandomForestRegressor
+<span class="kw">from</span> sklearn.neighbors       <span class="kw">import</span> KNeighborsClassifier
+
+<span class="cm"># ── For REGRESSION (house price, sales) ───</span>
+model = <span class="cl">RandomForestRegressor</span>(n_estimators=<span class="nu">100</span>, random_state=<span class="nu">42</span>)
+
+<span class="cm"># ── For CLASSIFICATION (polluted/clean, fraud/not) ───</span>
+<span class="cm"># model = RandomForestClassifier(n_estimators=100, random_state=42)</span>
+
+<span class="cm"># Train the model</span>
+model.<span class="fn">fit</span>(X_train, y_train)
+<span class="fn">print</span>(<span class="st">"✅ Model trained!"</span>)</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step-card" id="s7">
+    <div class="step-header" onclick="toggle('s7')">
+      <div class="step-num" style="background:rgba(16,185,129,0.15);color:#10b981">7</div>
+      <div class="step-title-group">
+        <div class="step-title">Evaluate the Model</div>
+        <div class="step-meta">Accuracy · R² · MAE · Confusion Matrix</div>
+      </div>
+      <div class="step-toggle">▾</div>
+    </div>
+    <div class="step-body">
+      <p class="desc">Check how well your model actually performs on data it has never seen. Use different metrics depending on whether you're doing classification or regression.</p>
+      <div class="sub-grid">
+        <div class="sub-card">
+          <h4 style="color:#10b981">Regression Metrics</h4>
+          <ul>
+            <li>MAE — average error in units</li>
+            <li>MSE — penalizes large errors</li>
+            <li>RMSE — error in original units</li>
+            <li>R² Score — % variance explained</li>
+          </ul>
+        </div>
+        <div class="sub-card">
+          <h4 style="color:#10b981">Classification Metrics</h4>
+          <ul>
+            <li>Accuracy — % correct predictions</li>
+            <li>Precision — of predicted +ve, how many right</li>
+            <li>Recall — of actual +ve, how many found</li>
+            <li>F1-Score — balance of P & R</li>
+          </ul>
+        </div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-label">python</div>
+        <button class="copy-btn" onclick="copyCode('c7')">copy</button>
+        <pre id="c7"><span class="cm"># ── STEP 7: Evaluate Model ────────────────────────────</span>
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> (
+    mean_absolute_error, mean_squared_error, r2_score,   <span class="cm"># regression</span>
+    accuracy_score, classification_report, confusion_matrix  <span class="cm"># classification</span>
+)
+
+y_pred = model.<span class="fn">predict</span>(X_test)
+
+<span class="cm"># ── REGRESSION evaluation ─────────────────</span>
+mae  = <span class="fn">mean_absolute_error</span>(y_test, y_pred)
+rmse = np.<span class="fn">sqrt</span>(<span class="fn">mean_squared_error</span>(y_test, y_pred))
+r2   = <span class="fn">r2_score</span>(y_test, y_pred)
+<span class="fn">print</span>(<span class="st">f"MAE : {mae:.2f}"</span>)
+<span class="fn">print</span>(<span class="st">f"RMSE: {rmse:.2f}"</span>)
+<span class="fn">print</span>(<span class="st">f"R²  : {r2:.4f}"</span>)  <span class="cm"># closer to 1 = better</span>
+
+<span class="cm"># ── CLASSIFICATION evaluation ──────────────</span>
+<span class="cm"># print(accuracy_score(y_test, y_pred))</span>
+<span class="cm"># print(classification_report(y_test, y_pred))</span>
+<span class="cm"># sns.heatmap(confusion_matrix(y_test, y_pred), annot=True)</span>
+
+<span class="cm"># Feature importance (tree models)</span>
+importances = pd.<span class="cl">Series</span>(model.feature_importances_, index=X.columns)
+importances.<span class="fn">sort_values</span>().<span class="fn">plot</span>(kind=<span class="st">'barh'</span>)
+plt.<span class="fn">title</span>(<span class="st">'Feature Importance'</span>)
+plt.<span class="fn">show</span>()</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="step-card" id="s8">
+    <div class="step-header" onclick="toggle('s8')">
+      <div class="step-num" style="background:rgba(239,68,68,0.15);color:#ef4444">8</div>
+      <div class="step-title-group">
+        <div class="step-title">Predict on New Data & Save Model</div>
+        <div class="step-meta">Real predictions · pickle · joblib</div>
+      </div>
+      <div class="step-toggle">▾</div>
+    </div>
+    <div class="step-body">
+      <p class="desc">Use your trained model to make real predictions. Save it to disk so you don't have to retrain every time — load and predict instantly.</p>
+      <div class="code-wrap">
+        <div class="code-label">python</div>
+        <button class="copy-btn" onclick="copyCode('c8')">copy</button>
+        <pre id="c8"><span class="cm"># ── STEP 8: Predict & Save Model ──────────────────────</span>
+<span class="kw">import</span> joblib
+
+<span class="cm"># Save model to disk</span>
+joblib.<span class="fn">dump</span>(model,  <span class="st">'my_model.pkl'</span>)
+joblib.<span class="fn">dump</span>(scaler, <span class="st">'my_scaler.pkl'</span>)
+<span class="fn">print</span>(<span class="st">"💾 Model saved!"</span>)
+
+<span class="cm"># ── Later: Load and predict ───────────────</span>
+model  = joblib.<span class="fn">load</span>(<span class="st">'my_model.pkl'</span>)
+scaler = joblib.<span class="fn">load</span>(<span class="st">'my_scaler.pkl'</span>)
+
+<span class="cm"># Predict on brand new single input</span>
+new_data = pd.<span class="cl">DataFrame</span>({
+    <span class="st">'area'</span>   : [<span class="nu">1200</span>],
+    <span class="st">'rooms'</span>  : [<span class="nu">3</span>],
+    <span class="st">'age'</span>    : [<span class="nu">5</span>],
+    <span class="st">'location'</span>: [<span class="nu">1</span>]   <span class="cm"># after encoding</span>
+})
+new_scaled  = scaler.<span class="fn">transform</span>(new_data)
+prediction  = model.<span class="fn">predict</span>(new_scaled)
+<span class="fn">print</span>(<span class="st">f"Predicted Price: ₹{prediction[0]:,.0f}"</span>)</pre>
+      </div>
+      <div class="tip-box">
+        <span class="tip-icon">🚀</span>
+        <span class="tip-text"><strong>Bonus tip:</strong> Always save your scaler alongside your model. When predicting, new data must be transformed with the same scaler used during training — otherwise predictions will be completely wrong.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL CARD -->
+  <div class="final-card">
+    <h2>🎯 You Now Have the Complete Roadmap</h2>
+    <p>Every ML project — whether it's predicting house prices, detecting water pollution, or forecasting sales — follows these exact 8 steps. Internalize this pipeline and you can tackle any dataset.</p>
+    <div class="checklist">
+      <div class="check-item"><span>✓</span><span>Import & Load</span></div>
+      <div class="check-item"><span>✓</span><span>EDA & Visualize</span></div>
+      <div class="check-item"><span>✓</span><span>Clean & Fix</span></div>
+      <div class="check-item"><span>✓</span><span>Encode & Scale</span></div>
+      <div class="check-item"><span>✓</span><span>Train-Test Split</span></div>
+      <div class="check-item"><span>✓</span><span>Train Model</span></div>
+      <div class="check-item"><span>✓</span><span>Evaluate</span></div>
+      <div class="check-item"><span>✓</span><span>Predict & Save</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggle(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('open');
+}
+function copyCode(id) {
+  const el = document.getElementById(id);
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = el.parentElement.querySelector('.copy-btn');
+    btn.textContent = 'copied!';
+    btn.style.color = '#00d4aa';
+    setTimeout(() => { btn.textContent = 'copy'; btn.style.color = ''; }, 2000);
+  });
+}
+// Open first card on load
+document.getElementById('s1').classList.add('open');
+</script>
+</body>
+</html>
