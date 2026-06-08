@@ -139,8 +139,8 @@ if st.button("Predict Price"):
         # Reshape input to 2D array for model prediction
         features = np.array([input_data])
         
-        # Run prediction
-        pred_price = float(model.predict(features)[0])
+        # Run prediction on log scale and convert back to original scale using expm1
+        pred_price = float(np.expm1(model.predict(features)[0]))
         
         # Display the result
         st.markdown(f"""
