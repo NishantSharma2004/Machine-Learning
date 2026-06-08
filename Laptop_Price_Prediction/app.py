@@ -86,10 +86,10 @@ st.markdown("""
         -webkit-text-fill-color: transparent;
     }
     </style>
-""", unsafe_allowed_html=True)
+""", unsafe_allow_html=True)
 
-st.write("<h1>Laptop Price Predictor</h1>", unsafe_allowed_html=True)
-st.write("<p class='subtitle'>Select specifications to estimate the fair retail market value of the laptop.</p>", unsafe_allowed_html=True)
+st.write("<h1>Laptop Price Predictor</h1>", unsafe_allow_html=True)
+st.write("<p class='subtitle'>Select specifications to estimate the fair retail market value of the laptop.</p>", unsafe_allow_html=True)
 
 # Grid layout for selectboxes
 col1, col2 = st.columns(2)
@@ -113,7 +113,7 @@ with col2:
     touchscreen = st.selectbox("Touchscreen Support", options=list(mappings['Touchscreen'].keys()))
     msoffice = st.selectbox("Microsoft Office Pre-installed", options=list(mappings['msoffice'].keys()))
 
-st.markdown("<br>", unsafe_allowed_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
 if st.button("Predict Price"):
     try:
@@ -148,7 +148,7 @@ if st.button("Predict Price"):
                 <div class="result-header">Estimated Retail Price</div>
                 <div class="result-price">₹{pred_price:,.2f}</div>
             </div>
-        """, unsafe_allowed_html=True)
+        """, unsafe_allow_html=True)
         
     except Exception as e:
         st.error(f"Prediction Error: {str(e)}")
