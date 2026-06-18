@@ -10,7 +10,7 @@ It contains end-to-end data science pipelines—spanning data cleaning, explorat
 
 | Project Name | Description / Goal | Primary Tech Stack | Web Interface | Directory Link |
 | :--- | :--- | :--- | :---: | :---: |
-| 🌾 **SoilSense Crop Recommendation** | Multi-class classifier recommending 22 crops based on soil nutrients (N-P-K, pH) and weather. | Python, Scikit-learn (Random Forest), Flask, HTML5/CSS3 | Deployed (Flask) | 🔗 [Folder](Crop_Recommendation/) |
+| 🌾 **AgriSense AI** | Multi-target crop recommendation and disease risk assessment platform built for IBM SkillsBuild. | Python, Scikit-learn (Random Forest), Streamlit | [Live App](https://agrisense-ai-gmghdkgbw7gqdd8epzfuvv.streamlit.app/) | 🔗 [Folder](Crop_Recommendation/) |
 | 💻 **Laptop Price Estimation** | Regression model predicting laptop prices with log-target transformation to manage price outliers. | Python, Scikit-learn (Gradient Boosting), NumPy, Streamlit | Deployed (Streamlit) | 🔗 [Folder](Laptop_Price_Prediction/) |
 | 🏍️ **Used Bike Price Prediction** | Regression model predicting bike resale price based on mileage, power, and age. | Python, Scikit-learn (Random Forest), Flask, Joblib | Deployed (Flask) | 🔗 [Folder](Used_Bike_Price_Prediction/) |
 | 🛒 **Big Sales Prediction** | Regressor predicting outlet sales using pipelines and column transformer preprocessing. | Python, Scikit-learn (Gradient Boosting), NumPy, Streamlit | Deployed (Streamlit) | 🔗 [Folder](Big%20Sale%20Prediction%20Project/) |
