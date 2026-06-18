@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import joblib
 from sklearn.model_selection import train_test_split
-from sklearn.compose import ColumnTransformer, TransformedTargetRegressor
+from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
@@ -50,15 +50,12 @@ def train_model():
             ('cat', categorical_transformer, categorical_features)
         ])
     
-    # 5. Model Training (with automatic Log-Scale target transformation)
-    gbr = GradientBoostingRegressor(n_estimators=150, learning_rate=0.1, max_depth=5, random_state=42)
-    
-    # Wraps the model to automatically take np.log1p during fit() and np.expm1 during predict()
-    model_wrapper = TransformedTargetRegressor(regressor=gbr, func=np.log1p, inverse_func=np.expm1)
+    # 5. Model Training (Optimized Gradient Boosting Regressor on Raw Target)
+    gbr = GradientBoostingRegressor(n_estimators=30, learning_rate=0.15, max_depth=6, random_state=42)
     
     pipeline = Pipeline(steps=[
         ('preprocessor', preprocessor),
-        ('model', model_wrapper)
+        ('model', gbr)
     ])
     
     # Train-test split

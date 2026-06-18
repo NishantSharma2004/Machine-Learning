@@ -15,9 +15,17 @@ This directory contains the optimized preprocessing pipeline, model training scr
 ## ⚙️ Technologies Used
 *   Python
 *   Pandas, NumPy
-*   Scikit-Learn (ColumnTransformer, Pipeline, TransformedTargetRegressor, GradientBoostingRegressor)
+*   Scikit-Learn (ColumnTransformer, Pipeline, GradientBoostingRegressor)
 *   Streamlit (Dashboard)
 *   Joblib (Serialization)
+
+---
+
+## 📊 Model Performance
+*   **Algorithm**: Gradient Boosting Regressor (Hyperparameter Tuned)
+*   **R² Score**: **63.54%** (Up from baseline 51.18%)
+*   **Mean Absolute Error (MAE)**: ₹ 794.19
+*   **Root Mean Squared Error (RMSE)**: ₹ 1183.62
 
 ---
 
